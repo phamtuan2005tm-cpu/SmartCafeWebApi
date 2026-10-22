@@ -1,0 +1,9 @@
+# Visual Studio / IDE temp files
+.vs/
+.idea/
+*.user
+*.suo
+
+# Build outputs
+bin/
+obj/
