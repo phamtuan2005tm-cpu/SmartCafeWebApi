@@ -26,7 +26,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         // Quan hệ 1-N với User
         builder.HasOne(o => o.Customer)
                .WithMany(u => u.Orders)
-               .HasForeignKey(o => o.Id)
+               .HasForeignKey(o => o.CustomerId)
                .OnDelete(DeleteBehavior.Restrict);
     }
 }

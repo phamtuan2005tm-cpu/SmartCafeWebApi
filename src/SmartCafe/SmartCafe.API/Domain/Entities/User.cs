@@ -11,6 +11,7 @@
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<Order> Orders { get; set; } = new List<Order>(); 
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

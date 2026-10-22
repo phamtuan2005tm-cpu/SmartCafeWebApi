@@ -21,7 +21,7 @@ namespace SmartCafe.API.Infrastructure.Data
         public DbSet<Option> Options => Set<Option>();
         public DbSet<ProductOptionGroup> ProductOptionGroups => Set<ProductOptionGroup>();
         public DbSet<OrderDetailOption> OrderDetailOptions => Set<OrderDetailOption>();
-
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

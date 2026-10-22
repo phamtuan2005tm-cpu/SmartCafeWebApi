@@ -219,6 +219,7 @@ namespace SmartCafe.API.Migrations
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -246,6 +247,8 @@ namespace SmartCafe.API.Migrations
                         .HasColumnType("numeric(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -419,6 +422,35 @@ namespace SmartCafe.API.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SmartCafe.API.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -513,9 +545,8 @@ namespace SmartCafe.API.Migrations
                 {
                     b.HasOne("SmartCafe.API.Domain.Entities.User", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
                 });
@@ -588,6 +619,17 @@ namespace SmartCafe.API.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("SmartCafe.API.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("SmartCafe.API.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
@@ -625,6 +667,8 @@ namespace SmartCafe.API.Migrations
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }
