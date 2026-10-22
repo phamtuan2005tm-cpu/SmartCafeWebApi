@@ -46,6 +46,24 @@ namespace SmartCafe.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a1111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Các món cà phê đậm đà chuẩn vị Việt và Ý",
+                            DisplayOrder = 1,
+                            Name = "Cà Phê"
+                        },
+                        new
+                        {
+                            Id = new Guid("a2222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Trà thanh mát kết hợp trái cây tươi nhiệt đới",
+                            DisplayOrder = 2,
+                            Name = "Trà & Trái Cây"
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.Option", b =>
@@ -98,6 +116,56 @@ namespace SmartCafe.API.Migrations
                     b.HasIndex("OptionGroupId");
 
                     b.ToTable("Options");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d1111111-1111-1111-1111-111111111111"),
+                            AdditionalPrice = 0m,
+                            DisplayOrder = 1,
+                            ExtraPrice = 0m,
+                            IsAvailable = true,
+                            Name = "100% Đường",
+                            OptionGroupId = new Guid("c1111111-1111-1111-1111-111111111111"),
+                            QuantityValue = 0m,
+                            Unit = "ml"
+                        },
+                        new
+                        {
+                            Id = new Guid("d2222222-2222-2222-2222-222222222222"),
+                            AdditionalPrice = 0m,
+                            DisplayOrder = 2,
+                            ExtraPrice = 0m,
+                            IsAvailable = true,
+                            Name = "50% Đường",
+                            OptionGroupId = new Guid("c1111111-1111-1111-1111-111111111111"),
+                            QuantityValue = 0m,
+                            Unit = "ml"
+                        },
+                        new
+                        {
+                            Id = new Guid("d3333333-3333-3333-3333-333333333333"),
+                            AdditionalPrice = 0m,
+                            DisplayOrder = 1,
+                            ExtraPrice = 0m,
+                            IsAvailable = true,
+                            Name = "100% Đá",
+                            OptionGroupId = new Guid("c2222222-2222-2222-2222-222222222222"),
+                            QuantityValue = 0m,
+                            Unit = "ml"
+                        },
+                        new
+                        {
+                            Id = new Guid("d4444444-4444-4444-4444-444444444444"),
+                            AdditionalPrice = 0m,
+                            DisplayOrder = 2,
+                            ExtraPrice = 0m,
+                            IsAvailable = true,
+                            Name = "50% Đá",
+                            OptionGroupId = new Guid("c2222222-2222-2222-2222-222222222222"),
+                            QuantityValue = 0m,
+                            Unit = "ml"
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.OptionGroup", b =>
@@ -128,6 +196,24 @@ namespace SmartCafe.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OptionGroups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c1111111-1111-1111-1111-111111111111"),
+                            AllowMultiple = false,
+                            InputType = "Single",
+                            IsRequired = false,
+                            Name = "Mức Đường"
+                        },
+                        new
+                        {
+                            Id = new Guid("c2222222-2222-2222-2222-222222222222"),
+                            AllowMultiple = false,
+                            InputType = "Single",
+                            IsRequired = false,
+                            Name = "Mức Đá"
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.Order", b =>
@@ -268,6 +354,32 @@ namespace SmartCafe.API.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b1111111-1111-1111-1111-111111111111"),
+                            CategoryId = new Guid("a1111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Cà phê espresso hòa quyện cùng sữa đặc và nước cốt dừa béo ngậy.",
+                            ImageUrl = "/images/products/bac-siu.png",
+                            IsAvailable = true,
+                            Name = "Bạc Sỉu Sữa Dừa",
+                            Price = 35000m,
+                            StockQuantity = 100
+                        },
+                        new
+                        {
+                            Id = new Guid("b2222222-2222-2222-2222-222222222222"),
+                            CategoryId = new Guid("a2222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Trà đen vị đào thơm mát, kết hợp vị chua nhẹ của cam tươi và hương sả.",
+                            ImageUrl = "/images/products/tra-dao.png",
+                            IsAvailable = true,
+                            Name = "Trà Đào Cam Sả",
+                            Price = 42000m,
+                            StockQuantity = 50
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.ProductOptionGroup", b =>
@@ -283,6 +395,28 @@ namespace SmartCafe.API.Migrations
                     b.HasIndex("OptionGroupId");
 
                     b.ToTable("ProductOptionGroups");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = new Guid("b1111111-1111-1111-1111-111111111111"),
+                            OptionGroupId = new Guid("c1111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            ProductId = new Guid("b1111111-1111-1111-1111-111111111111"),
+                            OptionGroupId = new Guid("c2222222-2222-2222-2222-222222222222")
+                        },
+                        new
+                        {
+                            ProductId = new Guid("b2222222-2222-2222-2222-222222222222"),
+                            OptionGroupId = new Guid("c1111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            ProductId = new Guid("b2222222-2222-2222-2222-222222222222"),
+                            OptionGroupId = new Guid("c2222222-2222-2222-2222-222222222222")
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>
@@ -327,6 +461,41 @@ namespace SmartCafe.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@smartcafe.com",
+                            FullName = "System Administrator",
+                            IsActive = true,
+                            PasswordHash = "6G94qKPK8LYNjnTllCqm2G3BUM08AzOK7yW30tfjrMc=",
+                            PhoneNumber = "",
+                            Role = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "staff@smartcafe.com",
+                            FullName = "Barista Staff",
+                            IsActive = true,
+                            PasswordHash = "39SPNjOKo2Io67niBLumtOGNsLYj4lxFiQHtyDH7GOk=",
+                            PhoneNumber = "",
+                            Role = "Staff"
+                        },
+                        new
+                        {
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "customer@gmail.com",
+                            FullName = "Nguyen Van A",
+                            IsActive = true,
+                            PasswordHash = "mOxlSo3yj48PjwIiBIPUaRa4UBfeC3TY7HVcKMuFOag=",
+                            PhoneNumber = "",
+                            Role = "Customer"
+                        });
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.Option", b =>
