@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SmartCafe.API.Application.Interfaces;
-using SmartCafe.API.Domain.DTOs;
+using SmartCafe.API.Domain.DTOs.Auth;
 using SmartCafe.API.Domain.Entities;
 using SmartCafe.API.Infrastructure.Data;
 using System.IdentityModel.Tokens.Jwt;

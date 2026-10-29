@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartCafe.API.Application.Interfaces;
-using SmartCafe.API.Domain.DTOs;
+using SmartCafe.API.Domain.DTOs.Auth;
 
 namespace SmartCafe.API.Controllers.Auth;
 

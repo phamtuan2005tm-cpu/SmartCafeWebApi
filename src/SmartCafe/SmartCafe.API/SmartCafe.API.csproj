@@ -20,8 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\NewFolder\" />
-    <Folder Include="Domain\DTOs\" />
     <Folder Include="Infrastructure\Migration\" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using SmartCafe.API.Domain.DTOs;
+﻿using SmartCafe.API.Domain.DTOs.Auth;
 
 namespace SmartCafe.API.Application.Interfaces;
 

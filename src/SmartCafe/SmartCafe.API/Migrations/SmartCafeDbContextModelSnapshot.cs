@@ -38,6 +38,9 @@ namespace SmartCafe.API.Migrations
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -54,6 +57,7 @@ namespace SmartCafe.API.Migrations
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Các món cà phê đậm đà chuẩn vị Việt và Ý",
                             DisplayOrder = 1,
+                            IsActive = true,
                             Name = "Cà Phê"
                         },
                         new
@@ -62,6 +66,7 @@ namespace SmartCafe.API.Migrations
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Trà thanh mát kết hợp trái cây tươi nhiệt đới",
                             DisplayOrder = 2,
+                            IsActive = true,
                             Name = "Trà & Trái Cây"
                         });
                 });
@@ -439,7 +444,8 @@ namespace SmartCafe.API.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -448,7 +454,7 @@ namespace SmartCafe.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshToken");
+                    b.ToTable("RefreshToken", (string)null);
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>

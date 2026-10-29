@@ -1,4 +1,4 @@
-﻿namespace SmartCafe.API.Domain.DTOs
+﻿namespace SmartCafe.API.Domain.DTOs.Auth
 {
     public class RefreshTokenRequestDto
     {
