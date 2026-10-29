@@ -15,7 +15,6 @@
         public Category Category { get; set; } = null!;
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-        // Bổ sung thêm dòng này để liên kết N-N với OptionGroup qua bảng trung gian:
         public ICollection<ProductOptionGroup> ProductOptionGroups { get; set; } = new List<ProductOptionGroup>();
     }
 }

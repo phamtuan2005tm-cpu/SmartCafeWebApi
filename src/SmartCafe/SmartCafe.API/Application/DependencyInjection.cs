@@ -15,7 +15,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoryService, CategoryService>();
 
         // 3. Đăng ký Product Service 
-        // services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductService, ProductService>();
 
         return services;
     }
