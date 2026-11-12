@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SmartCafe.API.Application;
+using SmartCafe.API.Hubs;
 using SmartCafe.API.Infrastructure.Data;
 using System.Text;
 
@@ -16,6 +17,7 @@ public class Program
 
         // API Controllers & OpenAPI Configuration
         builder.Services.AddControllers();
+        builder.Services.AddSignalR();
         builder.Services.AddEndpointsApiExplorer();
 
         // Swagger UI & JWT Bearer Authentication Setup
@@ -103,6 +105,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
+        app.MapHub<OrderHub>("/hubs/orders");
 
         app.Run();
     }
