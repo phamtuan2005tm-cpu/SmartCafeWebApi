@@ -26,6 +26,9 @@ public static class DependencyInjection
         //6. Đăng ký cho Table Service
         services.AddScoped<ITableService, TableService>();
 
+        //7. đăng ký cho wallet service
+        services.AddScoped<IWalletService, WalletService>();
+
         return services;
     }
 }
