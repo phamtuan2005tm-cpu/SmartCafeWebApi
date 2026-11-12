@@ -23,6 +23,9 @@ public static class DependencyInjection
         //5. Đăng ký cho Option Service
         services.AddScoped<IOptionService, OptionService>();
 
+        //6. Đăng ký cho Table Service
+        services.AddScoped<ITableService, TableService>();
+
         return services;
     }
 }

@@ -28,5 +28,10 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                .WithMany(u => u.Orders)
                .HasForeignKey(o => o.CustomerId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(o => o.Table)
+               .WithMany(t => t.Orders)
+               .HasForeignKey(o => o.TableId)
+               .OnDelete(DeleteBehavior.SetNull);
     }
 }

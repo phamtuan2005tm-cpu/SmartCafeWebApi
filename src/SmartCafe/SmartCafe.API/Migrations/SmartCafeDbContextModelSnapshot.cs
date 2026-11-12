@@ -235,25 +235,36 @@ namespace SmartCafe.API.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
                     b.Property<string>("OrderType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("ScheduledPickupTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int?>("TableNumber")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("TableId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("TotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("TableId");
 
                     b.ToTable("Orders");
                 });
@@ -457,6 +468,50 @@ namespace SmartCafe.API.Migrations
                     b.ToTable("RefreshToken", (string)null);
                 });
 
+            modelBuilder.Entity("SmartCafe.API.Domain.Entities.Table", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("QrCodeToken")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QrCodeToken")
+                        .IsUnique();
+
+                    b.HasIndex("TableNumber")
+                        .IsUnique();
+
+                    b.ToTable("Tables");
+                });
+
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -554,7 +609,14 @@ namespace SmartCafe.API.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("SmartCafe.API.Domain.Entities.Table", "Table")
+                        .WithMany("Orders")
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.OrderDetail", b =>
@@ -668,6 +730,11 @@ namespace SmartCafe.API.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ProductOptionGroups");
+                });
+
+            modelBuilder.Entity("SmartCafe.API.Domain.Entities.Table", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("SmartCafe.API.Domain.Entities.User", b =>

@@ -15,6 +15,7 @@ namespace SmartCafe.API.Infrastructure.Data
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
+        public DbSet<Table> Tables { get; set; }
 
         // Nhóm tùy chọn và cấu hình
         public DbSet<OptionGroup> OptionGroups => Set<OptionGroup>();
