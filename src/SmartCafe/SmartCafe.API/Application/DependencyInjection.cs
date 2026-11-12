@@ -17,6 +17,12 @@ public static class DependencyInjection
         // 3. Đăng ký Product Service 
         services.AddScoped<IProductService, ProductService>();
 
+        // 4. đăng ký cho OptionGroup Service
+        services.AddScoped<IOptionGroupService, OptionGroupService>();
+
+        //5. Đăng ký cho Option Service
+        services.AddScoped<IOptionService, OptionService>();
+
         return services;
     }
 }
