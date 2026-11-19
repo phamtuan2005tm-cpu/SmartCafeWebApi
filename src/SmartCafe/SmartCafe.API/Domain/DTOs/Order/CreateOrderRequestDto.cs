@@ -9,7 +9,7 @@ public class CreateOrderRequestDto
     public string OrderType { get; set; } = "DineIn";
 
     public Guid? TableId { get; set; } // Bắt buộc nếu OrderType == "DineIn"
-
+    public string? VoucherCode { get; set; }
     public DateTime? ScheduledPickupTime { get; set; } // Tùy chọn cho đơn Pickup
 
     [MaxLength(500)]

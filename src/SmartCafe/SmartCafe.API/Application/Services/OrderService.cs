@@ -14,15 +14,21 @@ public class OrderService : IOrderService
     private readonly SmartCafeDbContext _context;
     private readonly IWalletService _walletService;
     private readonly IHubContext<OrderHub> _hubContext;
+    private readonly IVoucherService _voucherService;
+    private readonly IPetService _petService;
 
     public OrderService(
         SmartCafeDbContext context,
         IWalletService walletService,
-        IHubContext<OrderHub> hubContext)
+        IHubContext<OrderHub> hubContext,
+        IVoucherService voucherService,
+        IPetService petService)
     {
         _context = context;
         _walletService = walletService;
         _hubContext = hubContext;
+        _voucherService = voucherService;
+        _petService = petService;
     }
 
     public async Task<OrderResponseDto> CreateOrderAsync(Guid customerId, CreateOrderRequestDto request)
@@ -72,7 +78,7 @@ public class OrderService : IOrderService
                 CreatedAt = DateTime.UtcNow
             };
 
-            decimal grandTotal = 0;
+            decimal subTotal = 0;
 
             foreach (var itemDto in request.Items)
             {
@@ -117,22 +123,50 @@ public class OrderService : IOrderService
                 }
 
                 decimal itemTotal = (product.Price + optionsPricePerCup) * itemDto.Quantity;
-                grandTotal += itemTotal;
+                subTotal += itemTotal;
 
                 order.OrderDetails.Add(orderDetail);
             }
 
-            order.TotalAmount = grandTotal;
+            // 3. Kiểm tra và tính giảm giá nếu khách áp mã Voucher
+            decimal discountAmount = 0;
+            Voucher? appliedVoucher = null;
+
+            if (!string.IsNullOrWhiteSpace(request.VoucherCode))
+            {
+                var validation = await _voucherService.ValidateAndCalculateDiscountAsync(
+                    customerId, request.VoucherCode, subTotal);
+                appliedVoucher = validation.Voucher;
+                discountAmount = validation.DiscountAmount;
+            }
+
+            decimal finalTotalAmount = Math.Max(0, subTotal - discountAmount);
+
+            order.SubTotal = subTotal;
+            order.DiscountAmount = discountAmount;
+            order.AppliedVoucherCode = appliedVoucher?.Code;
+            order.TotalAmount = finalTotalAmount;
+
             _context.Orders.Add(order);
+
+            if (appliedVoucher != null)
+            {
+                await _voucherService.RecordVoucherUsageAsync(
+                    appliedVoucher, customerId, order.Id, discountAmount);
+            }
+
             await _context.SaveChangesAsync();
 
-            // 3. Thanh toán trước qua Ví nội bộ SmartCafe
+            // 4. Thanh toán trước qua Ví nội bộ SmartCafe theo số tiền thực trả sau giảm giá
             var shortCode = order.Id.ToString("N")[..6].ToUpper();
-            await _walletService.DeductForOrderAsync(
-                customerId,
-                order.Id,
-                grandTotal,
-                $"Thanh toán đơn hàng #{shortCode}");
+            if (finalTotalAmount > 0)
+            {
+                await _walletService.DeductForOrderAsync(
+                    customerId,
+                    order.Id,
+                    finalTotalAmount,
+                    $"Thanh toán đơn hàng #{shortCode}");
+            }
 
             // Cập nhật trạng thái đơn sang Paid & cập nhật trạng thái bàn sang Occupied
             order.Status = "Paid";
@@ -149,7 +183,7 @@ public class OrderService : IOrderService
             var responseDto = await GetByIdAsync(order.Id)
                 ?? throw new Exception("Lỗi khi tải lại thông tin đơn hàng vừa tạo.");
 
-            // 4. Bắn SignalR đẩy đơn mới xuống màn hình pha chế (KDS)
+            // 5. Bắn SignalR đẩy đơn mới xuống màn hình pha chế (KDS)
             await _hubContext.Clients.Group("KitchenStaff")
                 .SendAsync("ReceiveNewOrder", responseDto);
 
@@ -236,10 +270,17 @@ public class OrderService : IOrderService
             // Validate Order State Machine
             ValidateStateTransition(order.Status, newStatus);
 
-            // Nếu Staff/Admin chủ động hủy đơn khi đơn đã Paid -> Hoàn tiền & trả kho
+            // Nếu Staff/Admin chủ động hủy đơn khi đơn đã Paid -> Hoàn tiền, trả kho & hoàn lại Voucher
             if (newStatus == "Cancelled" && order.Status == "Paid")
             {
                 await RestoreStockAndRefundAsync(order, "Hoàn tiền do quán hủy đơn");
+            }
+
+            // Nếu đơn hoàn tất -> Cộng EXP cho Pet của khách & tự động cấp Voucher nếu lên cấp
+            if (newStatus == "Completed" && order.CustomerId.HasValue)
+            {
+                await _petService.AddExpFromCompletedOrderAsync(
+                    order.CustomerId.Value, order.TotalAmount);
             }
 
             order.Status = newStatus;
@@ -342,7 +383,7 @@ public class OrderService : IOrderService
 
     private async Task RestoreStockAndRefundAsync(Order order, string reasonPrefix)
     {
-        // Cộng lại tồn kho
+        // 1. Cộng lại tồn kho
         foreach (var detail in order.OrderDetails)
         {
             if (detail.Product != null)
@@ -351,7 +392,13 @@ public class OrderService : IOrderService
             }
         }
 
-        // Hoàn tiền vào ví khách hàng
+        // 2. Hoàn trả Voucher đã áp dụng (nếu có)
+        if (!string.IsNullOrEmpty(order.AppliedVoucherCode))
+        {
+            await _voucherService.RefundVoucherUsageAsync(order.Id);
+        }
+
+        // 3. Hoàn tiền thực trả vào ví khách hàng
         if (order.CustomerId.HasValue && order.TotalAmount > 0)
         {
             var shortCode = order.Id.ToString("N")[..6].ToUpper();
@@ -394,6 +441,9 @@ public class OrderService : IOrderService
             TableNumber = o.Table?.TableNumber,
             TableName = o.Table?.TableName,
             OrderType = o.OrderType,
+            SubTotal = o.SubTotal,
+            DiscountAmount = o.DiscountAmount,
+            AppliedVoucherCode = o.AppliedVoucherCode,
             TotalAmount = o.TotalAmount,
             Status = o.Status,
             ScheduledPickupTime = o.ScheduledPickupTime,

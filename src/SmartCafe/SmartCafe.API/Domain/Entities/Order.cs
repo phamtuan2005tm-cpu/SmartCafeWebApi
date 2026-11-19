@@ -21,4 +21,8 @@ public class Order
     public User? Customer { get; set; }
     public Table? Table { get; set; }
     public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public decimal SubTotal { get; set; }          // Tổng tiền món + topping trước giảm giá
+    public decimal DiscountAmount { get; set; } = 0; // Số tiền được Voucher giảm
+    public string? AppliedVoucherCode { get; set; }  // Mã Voucher đã áp dụng (nếu có)
 }

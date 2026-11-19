@@ -31,6 +31,15 @@ public static class DependencyInjection
         
         //8. Đăng ký cho Order Service
         services.AddScoped<IOrderService, OrderService>();
+
+        //9. Đăng ký cho SaveCustomDrink Service
+        services.AddScoped<ISavedCustomDrinkService, SavedCustomDrinkService>();
+
+        services.AddScoped<IVoucherService, VoucherService>();
+        
+        services.AddScoped<IPetService, PetService>();
+        
         return services;
+
     }
 }

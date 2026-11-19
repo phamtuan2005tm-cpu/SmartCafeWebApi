@@ -18,6 +18,10 @@ namespace SmartCafe.API.Infrastructure.Data
         public DbSet<Table> Tables { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<WalletTransaction> WalletTransactions { get; set; }
+        public DbSet<SavedCustomDrink> SavedCustomDrinks { get; set; }
+        public DbSet<UserPet> UserPets { get; set; }
+        public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<VoucherUsage> VoucherUsages { get; set; }
 
         // Nhóm tùy chọn và cấu hình
         public DbSet<OptionGroup> OptionGroups => Set<OptionGroup>();

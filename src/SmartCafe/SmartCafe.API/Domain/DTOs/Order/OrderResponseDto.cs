@@ -9,6 +9,9 @@ public class OrderResponseDto
     public int? TableNumber { get; set; }
     public string? TableName { get; set; }
     public string OrderType { get; set; } = string.Empty;
+    public decimal SubTotal { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public string? AppliedVoucherCode { get; set; }
     public decimal TotalAmount { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime? ScheduledPickupTime { get; set; }
@@ -37,4 +40,5 @@ public class OrderDetailOptionResponseDto
     public Guid OptionId { get; set; }
     public string OptionName { get; set; } = string.Empty;
     public decimal AdditionalPrice { get; set; }
+    
 }
